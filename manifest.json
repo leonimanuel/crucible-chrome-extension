@@ -18,6 +18,7 @@
 	"permissions": [
 		"contextMenus",
 		"tabs",
+		"activeTab",
 		"storage",
 		"http://localhost:3000/*"
 	],
@@ -27,6 +28,7 @@
       "background.js", 
       "eventPage.js"
     ],
+
     "persistent": false
   }
 }

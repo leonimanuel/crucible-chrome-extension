@@ -1,13 +1,26 @@
-let contextMenuitem = {
-	"id": "selectFactId",
-	"title": "selectFactTitle",
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse ) {
+// 	if (request.todo === "showPageAction") {
+
+// 	}
+// })
+
+let addFactMenuitem = {
+	"id": "addFactId",
+	"title": "add fact",
 	"contexts": ["selection"]
 }
 
-chrome.contextMenus.create(contextMenuitem);
+let rephraseAndAddFactMenuitem = {
+	"id": "rephraseFactId",
+	"title": "rephrase fact and add",
+	"contexts": ["selection"]
+}
+
+chrome.contextMenus.create(addFactMenuitem);
+chrome.contextMenus.create(rephraseAndAddFactMenuitem);
 
 chrome.contextMenus.onClicked.addListener(function(clickData) {
-	if (clickData.menuItemId == "selectFactId" && clickData.selectionText) {
+	if (clickData.menuItemId == "addFactId" && clickData.selectionText) {
 
 		function getCurrentTab(callback){ //Take a callback
 		    var theTab;
@@ -46,9 +59,7 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
 					})
 				}
 
-				console.log(clickData.selectionText, tabooli)
-
-				fetch("http://localhost:3000/facts", configObj)
+				fetch("https://crucible-api.herokuapp.com/facts", configObj)
 					.then(resp => resp.json())
 					.then(function(object) {
 						console.log(object)
@@ -62,6 +73,11 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
 		}
 
 		setTimeout(postData, 500)
+	} else if (clickData.menuItemId == "rephraseFactId" && clickData.selectionText) {
+			debugger	
+			chrome.runtime.sendMessage({greeting: "changeColor"}, function(response) {
+			  console.log(response.farewell);
+			});
 	}
 })
 
