@@ -1,5 +1,6 @@
 let loginForm = document.getElementById("login-form");
 console.log(loginForm)
+
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault()
 	let configObj = {
@@ -9,19 +10,20 @@ loginForm.addEventListener("submit", (e) => {
 			Accept: "application/json"
 		},
 		body: JSON.stringify({
-			email: "billy@aol.com",
-			password: "greenbeans"
+			email: document.getElementById("email-input").value,
+			password: document.getElementById("password-input").value
 		})
 	}
 
-	fetch("http://localhost:3000" + "/authenticate", configObj)
+	// debugger
+	fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
 	.then(resp => resp.json())
 	.then(data => {
 		if (data.auth_token) {
 			chrome.storage.sync.set({"token": data.auth_token})
 			console.log(data)
-			$("#main").empty()
-			showUser(data.email)
+			$("#login-form").empty()
+			showUser(data.name)
 			// localStorage.setItem("token", data.auth_token)
 			// this.props.logIn(data)
 		} else {
@@ -31,10 +33,55 @@ loginForm.addEventListener("submit", (e) => {
 	.catch(err => alert(err.message))
 })
 
-showUser = (email) => {
-	$("#main").empty()
-	let userDisplay = document.createElement("div");
-	userDisplay.id = "user-display";
-	userDisplay.innerText = `User: ${email}`
-	$("#main").append(userDisplay)
+showUser = (name) => {
+	$("#login-form").css("display", "none")
+	$("#user-name").text(name)
 }
+
+showSelection = () => {
+	chrome.tabs.executeScript({
+	    code: "window.getSelection().toString();"
+	}, function(selection) {
+	    if (selection[0]) {
+	    	document.getElementById("selection-wrapper").innerHTML = selection[0]
+	    	document.getElementById("selection-view").style.display = "block"
+	    } else {
+	    	$("#no-selection-view").css("display", "block")
+	    }
+	    // let selectionWrapper = document.createElement("div")
+	    // selectionWrapper.id = "selection-wrapper"
+	    // selectionWrapper.innerHTML = selection[0]
+	    
+	    // let main = document.getElementById("main")
+	    // main.appendChild(selectionWrapper)
+	});
+	// console.log("logging selection: ", window.getSelection())
+	// if (window.getSelection()) {
+	// 	const selection = document.createElement("div")
+	// 	selection.id = "selection-text"
+	// 	selection.innerText = window.getSelection()
+	// 	$("#main").append(selection)
+	// }
+}
+
+showSelection()
+
+
+// chrome.tabs.executeScript({
+//     code: "window.getSelection().toString();"
+// }, function(selection) {
+//     document.getElementById("output").innerHTML = selection[0];
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+

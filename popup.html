@@ -3,15 +3,37 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Crucible Extension</title>
+	<link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-	<h1>Crucible </h1>
+	<div id="header-content">
+		<h1>Crucible </h1>
+		<div id="user-name"></div>		
+	</div>
 	<main id="main">
+		<div id="selection-view">
+			<div ><b>Selection:</b></div>
+			<div id="selection-wrapper"></div>
+			<br>
+			<div><b>Rephrase:</b> (optional)</div>
+			<form id="submit-fact-form">
+				<textarea name="rephrase" id="rephrase-input" cols="30" rows="5"
+					placeholder="If this selection does not make sense as a fact on it's own, rephrase it here"></textarea>
+				<div id="fact-submit-wrapper">
+					<input id="submit-fact-button" type="submit" value="submit fact">
+				</div>
+			</form>			
+		</div>
+
 		<form id="login-form">
 			<p>Email: <input id="email-input" type="email"></p>
-			<p>Password: <input type="password"></p>
-			<input type="submit" value="Log in">
-		</form>		
+			<p>Password: <input id="password-input" type="password"></p>
+			<input type="submit" value="Log in">				
+		</form>
+
+		<div id="no-selection-view">
+			To add a fact to Crucible, simply highlight the fact you want to add and open this extension.
+		</div>
 	</main>
 
 	

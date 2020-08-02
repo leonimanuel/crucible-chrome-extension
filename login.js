@@ -9,16 +9,17 @@ chrome.storage.sync.get("token", (result) => {
 			Authorization: result.token
 		}
 	}
-
-	fetch("http://localhost:3000" + "/users/user", configObj)
+	// debugger
+	fetch("https://crucible-api.herokuapp.com" + "/users/user", configObj)
 	.then(resp => resp.json())
 	.then(data => {
-		if (data.email) {
+		if (data.name) {
 			console.log(data)
-			showUser(data.email)
+			showUser(data.name)
 			// localStorage.setItem("token", data.auth_token)
 			// this.props.logIn(data)
 		} else {
+			document.getElementById("login-form").style.display = "block"
 			console.log("LOGIN UNSUCCESSSFUL")
 		}
 	})
