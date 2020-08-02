@@ -16,6 +16,7 @@ chrome.storage.sync.get("token", (result) => {
 	.then(data => {
 		console.log("DATA", data)
 		if (data.name) {
+			isSignedIn = true
 			showUser(data.name)
 			// localStorage.setItem("token", data.auth_token)
 			// this.props.logIn(data)
@@ -24,5 +25,8 @@ chrome.storage.sync.get("token", (result) => {
 			console.log("LOGIN UNSUCCESSSFUL")
 		}
 	})
-	.catch(err => alert(err.message))	
+	.catch(err => {
+		alert(err.message)
+		document.getElementById("login-form").style.display = "block"
+	})	
 })

@@ -53,6 +53,19 @@ body {
 	display: none;
 }
 
+#login-title {
+	/*margin: 0 auto;*/
+	margin-top: 0;
+	text-align: center;
+}
+
+.login-input-wrapper {
+	display: flex;
+	justify-content: space-between;
+	margin: 10px 0;
+	margin-right: 20px;
+}
+
 #user-name {
 	font-size: 1.3em
 }
@@ -65,3 +78,15 @@ body {
 	border-radius: 5px;
 	padding: 5px;
 }
+
+#successful-fact-submit-wrapper {
+	display: none;
+}
+
+#successful-submit-text {
+	padding: 10px;
+	background-color: #ade498;
+	border-radius: 5px;
+}
+
+

@@ -1,3 +1,5 @@
+let isSignedIn = false
+
 let loginForm = document.getElementById("login-form");
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault()
@@ -21,7 +23,7 @@ loginForm.addEventListener("submit", (e) => {
 		if (data.auth_token) {
 			chrome.storage.sync.set({"token": data.auth_token})
 			console.log(data)
-			$("#login-form").empty()
+			$("#login-form").css("display", "none")
 			showUser(data.name)
 			// localStorage.setItem("token", data.auth_token)
 			// this.props.logIn(data)
@@ -33,24 +35,21 @@ loginForm.addEventListener("submit", (e) => {
 })
 
 showUser = (name) => {
-	$("#login-form").css("display", "none")
+	// $("#login-form").css("display", "none")
 	$("#user-name").text(name)
-}
-
-showSelection = () => {
 	chrome.tabs.executeScript({
 	    code: "window.getSelection().toString();"
 	}, function(selection) {
-	    if (selection[0]) {
-	    	document.getElementById("selection-wrapper").innerHTML = selection[0]
-	    	document.getElementById("selection-view").style.display = "block"
-	    } else {
-	    	$("#no-selection-view").css("display", "block")
+	    if (isSignedIn) {
+		    if (selection[0]) {
+		    	document.getElementById("selection-wrapper").innerHTML = selection[0]
+		    	document.getElementById("selection-view").style.display = "block"
+		    } else {
+		    	$("#no-selection-view").css("display", "block")
+		    }
 	    }
 	});
 }
-showSelection()
-
 
 const submitFactForm = document.getElementById("submit-fact-form")
 submitFactForm.addEventListener("submit", (e) => {
@@ -66,7 +65,7 @@ getTab = (callback) => {
 }
 
 postFact = (tab) => {
-	alert(tab)
+	debugger
 	let token = chrome.storage.sync.get("token", (result) => {
 		let configObj = {
 			method: "POST",
@@ -77,14 +76,18 @@ postFact = (tab) => {
 			},
 			body: JSON.stringify({
 					"selected_text": document.getElementById("selection-wrapper").innerText,
+					"rephrase": document.getElementById("rephrase-input").value,
 					"selection_url": tab			
 			})
 		}
 		// fetch("https://crucible-api.herokuapp.com/facts", configObj)
-		fetch("http://localhost:3000" + "/facts", configObj)
+		fetch("http://localhost:3000" + "/add-from-extension", configObj)
 			.then(resp => resp.json())
 			.then(function(object) {
-				console.log(object)
+				if (object.status === "success") {
+					$("#main").empty()
+					document.getElementById("successful-fact-submit-wrapper").style.display = "block"
+				}
 			})
 			.catch(function(error) {
 				alert(error.message);

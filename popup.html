@@ -18,16 +18,23 @@
 			<div><b>Rephrase:</b> (optional)</div>
 			<form id="submit-fact-form">
 				<textarea name="rephrase" id="rephrase-input" cols="30" rows="5"
-					placeholder="If this selection does not make sense as a fact as is, rephrase it here"></textarea>
+					placeholder="If your selection does not make sense as a fact as is, rephrase it here..."></textarea>
 				<div id="fact-submit-wrapper">
-					<input id="submit-fact-button" type="submit" value="submit fact">
+					<input id="submit-fact-button" type="submit" value="submit for review">
 				</div>
 			</form>			
 		</div>
 
 		<form id="login-form">
-			<p>Email: <input id="email-input" type="email"></p>
-			<p>Password: <input id="password-input" type="password"></p>
+			<h2 id="login-title">Login</h2>
+			<div class="login-input-wrapper">
+				<span>Email: </span>
+				<input id="email-input" type="email">
+			</div>
+			<div class="login-input-wrapper">
+				<span>Password: </span>
+				<input id="password-input" type="password">
+			</div>
 			<input type="submit" value="Log in">				
 		</form>
 
@@ -35,7 +42,11 @@
 			To add a fact to Crucible, simply highlight the fact you want to add and open this extension.
 		</div>
 	</main>
-
+		<div id="successful-fact-submit-wrapper">
+			<div id="successful-submit-text">
+				Your fact has been successfully submitted for peer review.
+			</div>
+		</div>
 	
 	<script src="jquery.js"></script>
 	<script src="popup.js"></script>
