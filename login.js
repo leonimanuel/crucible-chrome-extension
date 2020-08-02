@@ -10,11 +10,12 @@ chrome.storage.sync.get("token", (result) => {
 		}
 	}
 	// debugger
-	fetch("https://crucible-api.herokuapp.com" + "/users/user", configObj)
+	// fetch("https://crucible-api.herokuapp.com" + "/users/extension", configObj)
+	fetch("http://localhost:3000" + "/users/extension", configObj)	
 	.then(resp => resp.json())
 	.then(data => {
+		console.log("DATA", data)
 		if (data.name) {
-			console.log(data)
 			showUser(data.name)
 			// localStorage.setItem("token", data.auth_token)
 			// this.props.logIn(data)

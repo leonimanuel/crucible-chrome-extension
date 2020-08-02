@@ -1,6 +1,4 @@
 let loginForm = document.getElementById("login-form");
-console.log(loginForm)
-
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault()
 	let configObj = {
@@ -16,7 +14,8 @@ loginForm.addEventListener("submit", (e) => {
 	}
 
 	// debugger
-	fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
+	// fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
+	fetch("http://localhost:3000" + "/authenticate", configObj)	
 	.then(resp => resp.json())
 	.then(data => {
 		if (data.auth_token) {
@@ -48,40 +47,48 @@ showSelection = () => {
 	    } else {
 	    	$("#no-selection-view").css("display", "block")
 	    }
-	    // let selectionWrapper = document.createElement("div")
-	    // selectionWrapper.id = "selection-wrapper"
-	    // selectionWrapper.innerHTML = selection[0]
-	    
-	    // let main = document.getElementById("main")
-	    // main.appendChild(selectionWrapper)
 	});
-	// console.log("logging selection: ", window.getSelection())
-	// if (window.getSelection()) {
-	// 	const selection = document.createElement("div")
-	// 	selection.id = "selection-text"
-	// 	selection.innerText = window.getSelection()
-	// 	$("#main").append(selection)
-	// }
 }
-
 showSelection()
 
 
-// chrome.tabs.executeScript({
-//     code: "window.getSelection().toString();"
-// }, function(selection) {
-//     document.getElementById("output").innerHTML = selection[0];
-// });
+const submitFactForm = document.getElementById("submit-fact-form")
+submitFactForm.addEventListener("submit", (e) => {
+	e.preventDefault();
+	getTab(postFact);
+})
 
+getTab = (callback) => {
+	chrome.tabs.query({active:true, currentWindow:true},function(tabs){
+	  console.log("getting tab")
+	  callback(tabs[0].url);
+	});	
+}
 
-
-
-
-
-
-
-
-
-
-
+postFact = (tab) => {
+	alert(tab)
+	let token = chrome.storage.sync.get("token", (result) => {
+		let configObj = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: result.token
+			},
+			body: JSON.stringify({
+					"selected_text": document.getElementById("selection-wrapper").innerText,
+					"selection_url": tab			
+			})
+		}
+		// fetch("https://crucible-api.herokuapp.com/facts", configObj)
+		fetch("http://localhost:3000" + "/facts", configObj)
+			.then(resp => resp.json())
+			.then(function(object) {
+				console.log(object)
+			})
+			.catch(function(error) {
+				alert(error.message);
+			})				
+	})
+}
 
