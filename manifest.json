@@ -23,12 +23,6 @@
 		"http://localhost:3000/*"
 	],
 
-  "background": {
-    "scripts": [
-      "background.js", 
-      "eventPage.js"
-    ],
-
     "persistent": false
   }
 }
