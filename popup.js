@@ -34,6 +34,12 @@ loginForm.addEventListener("submit", (e) => {
 				}, () => {
 					// debugger
 					chrome.browserAction.setBadgeText({"text": data.user.unread_messages_count.toString()});
+					if (data.user.unread_messages_count === 0) {
+						chrome.browserAction.setBadgeBackgroundColor({color: "#318fb5"})
+					} else {
+						chrome.browserAction.setBadgeBackgroundColor({color: "red"})
+					}
+					
 					$("#login-form").css("display", "none")
 					isSignedIn = true
 					showUser(data.user.name)
@@ -119,13 +125,6 @@ document.getElementById("rephrase-input").addEventListener("keyup", (e) => {
 		"lastSelection": document.getElementById("selection-wrapper").innerText
 	})
 })	
-// window.onblur = function(){
-// 	chrome.storage.sync.set({"rephrase": document.getElementById("rephrase-input").value})
-// }
-
-// document.getElementById("websocket-button").addEventListener("click", () => {
-// 	createChatRoomWebsocketConnection()
-// })
 
 document.getElementById("logout-button").addEventListener("click", () => {
 	chrome.storage.sync.set({"token": ""})
