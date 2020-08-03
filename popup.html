@@ -7,7 +7,9 @@
 </head>
 <body>
 	<div id="header-content">
-		<h1>Crucible </h1>
+		<a href="https://crucible-frontend.web.app/" style="text-decoration:none">
+			<h1 id="crucible-logo">Crucible</h1>			
+		</a>
 		<div id="user-name"></div>		
 	</div>
 	<main id="main">
@@ -20,18 +22,19 @@
 				<textarea name="rephrase" id="rephrase-input" cols="30" rows="5"
 					placeholder="If your selection does not make sense as a fact as is, rephrase it here..."></textarea>
 				<div id="fact-submit-wrapper">
+					<button id="logout-button">Log out</button>
 					<input id="submit-fact-button" type="submit" value="submit for review">
 				</div>
-			</form>			
+			</form>		
 		</div>
 
 		<form id="login-form">
 			<h2 id="login-title">Login</h2>
 			<div class="login-input-wrapper">
 				<span>Email: </span>
-				<input id="email-input" type="email">
+				<input id="email-input" type="email" required>
 			</div>
-			<div class="login-input-wrapper">
+			<div class="login-input-wrapper" id="password-input-wrapper" required>
 				<span>Password: </span>
 				<input id="password-input" type="password">
 			</div>

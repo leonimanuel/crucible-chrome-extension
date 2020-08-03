@@ -15,14 +15,14 @@
 		"default_popup": "popup.html"
 	},
 
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  
 	"permissions": [
-		"contextMenus",
 		"tabs",
 		"activeTab",
-		"storage",
-		"http://localhost:3000/*"
-	],
-
-    "persistent": false
-  }
+		"storage"
+	]
 }

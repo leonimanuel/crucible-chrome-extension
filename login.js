@@ -10,23 +10,27 @@ chrome.storage.sync.get("token", (result) => {
 		}
 	}
 	// debugger
-	// fetch("https://crucible-api.herokuapp.com" + "/users/extension", configObj)
-	fetch("http://localhost:3000" + "/users/extension", configObj)	
+	fetch("https://crucible-api.herokuapp.com" + "/users/extension", configObj)
 	.then(resp => resp.json())
 	.then(data => {
-		console.log("DATA", data)
 		if (data.name) {
 			isSignedIn = true
 			showUser(data.name)
-			// localStorage.setItem("token", data.auth_token)
-			// this.props.logIn(data)
 		} else {
 			document.getElementById("login-form").style.display = "block"
-			console.log("LOGIN UNSUCCESSSFUL")
 		}
 	})
 	.catch(err => {
 		alert(err.message)
 		document.getElementById("login-form").style.display = "block"
 	})	
+})
+
+// chrome.storage.sync.get("rephrase", (result) => {
+// 	alert("sup dawg")
+// }  
+
+document.getElementById("logout-button").addEventListener("click", () => {
+	chrome.storage.sync.set({"token": ""})
+	window.close()
 })

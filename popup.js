@@ -1,5 +1,6 @@
 let isSignedIn = false
 
+
 let loginForm = document.getElementById("login-form");
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault()
@@ -15,28 +16,27 @@ loginForm.addEventListener("submit", (e) => {
 		})
 	}
 
-	// debugger
-	// fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
-	fetch("http://localhost:3000" + "/authenticate", configObj)	
-	.then(resp => resp.json())
-	.then(data => {
-		if (data.auth_token) {
-			chrome.storage.sync.set({"token": data.auth_token})
-			console.log(data)
-			$("#login-form").css("display", "none")
-			showUser(data.name)
-			// localStorage.setItem("token", data.auth_token)
-			// this.props.logIn(data)
-		} else {
-			console.log("LOGIN UNSUCCESSSFUL")
-		}
-	})
-	.catch(err => alert(err.message))
+	fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
+		.then(resp => resp.json())
+		.then(data => {
+			if (data.auth_token) {
+				chrome.storage.sync.set({"token": data.auth_token})
+				$("#login-form").css("display", "none")
+				isSignedIn = true
+				showUser(data.user.name)
+			} else {
+				const loginError = document.createElement("div");
+				loginError.innerText = "Invalid credentials. Please try again."
+				loginError.style.color = "red"
+				$("#password-input-wrapper").after(loginError)
+			}
+		})
+		.catch(err => alert(err.message))
 })
 
 showUser = (name) => {
-	// $("#login-form").css("display", "none")
-	$("#user-name").text(name)
+	$("#user-name").text(name);
+	$("#logout-button").css("display", "block");
 	chrome.tabs.executeScript({
 	    code: "window.getSelection().toString();"
 	}, function(selection) {
@@ -49,6 +49,9 @@ showUser = (name) => {
 		    }
 	    }
 	});
+	chrome.storage.sync.get("rephrase", (result) => {
+		$("#rephrase-input").val(result.rephrase ? result.rephrase : "")
+	});
 }
 
 const submitFactForm = document.getElementById("submit-fact-form")
@@ -59,14 +62,12 @@ submitFactForm.addEventListener("submit", (e) => {
 
 getTab = (callback) => {
 	chrome.tabs.query({active:true, currentWindow:true},function(tabs){
-	  console.log("getting tab")
 	  callback(tabs[0].url);
 	});	
 }
 
 postFact = (tab) => {
-	debugger
-	let token = chrome.storage.sync.get("token", (result) => {
+	let token = chrome.storage.local.get("token", (result) => {
 		let configObj = {
 			method: "POST",
 			headers: {
@@ -80,13 +81,13 @@ postFact = (tab) => {
 					"selection_url": tab			
 			})
 		}
-		// fetch("https://crucible-api.herokuapp.com/facts", configObj)
-		fetch("http://localhost:3000" + "/add-from-extension", configObj)
+		fetch("https://crucible-api.herokuapp.com/add-from-extension", configObj)
 			.then(resp => resp.json())
 			.then(function(object) {
 				if (object.status === "success") {
 					$("#main").empty()
 					document.getElementById("successful-fact-submit-wrapper").style.display = "block"
+					chrome.storage.sync.set({"rephrase": ""})
 				}
 			})
 			.catch(function(error) {
@@ -95,3 +96,10 @@ postFact = (tab) => {
 	})
 }
 
+document.getElementById("rephrase-input").addEventListener("keyup", (e) => {
+	console.log("updating rephrase in storage")
+	chrome.storage.sync.set({"rephrase": e.target.value})
+})	
+// window.onblur = function(){
+// 	chrome.storage.sync.set({"rephrase": document.getElementById("rephrase-input").value})
+// }
