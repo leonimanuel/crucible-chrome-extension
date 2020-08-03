@@ -1,5 +1,12 @@
 let isSignedIn = false
 
+chrome.storage.sync.get("name", (result) => {
+	if (result.name) {
+		showUser(result.name)
+	} else {
+		$("#login-form").css("display", "block")
+	}
+})
 
 let loginForm = document.getElementById("login-form");
 loginForm.addEventListener("submit", (e) => {
@@ -20,10 +27,17 @@ loginForm.addEventListener("submit", (e) => {
 		.then(resp => resp.json())
 		.then(data => {
 			if (data.auth_token) {
-				chrome.storage.sync.set({"token": data.auth_token})
-				$("#login-form").css("display", "none")
-				isSignedIn = true
-				showUser(data.user.name)
+				chrome.storage.sync.set({
+					"token": data.auth_token,
+					"name": data.user.name,
+					"unreads": data.user.unread_messages_count
+				}, () => {
+					// debugger
+					chrome.browserAction.setBadgeText({"text": data.user.unread_messages_count.toString()});
+					$("#login-form").css("display", "none")
+					isSignedIn = true
+					showUser(data.user.name)
+				})
 			} else {
 				const loginError = document.createElement("div");
 				loginError.innerText = "Invalid credentials. Please try again."
@@ -40,17 +54,19 @@ showUser = (name) => {
 	chrome.tabs.executeScript({
 	    code: "window.getSelection().toString();"
 	}, function(selection) {
-	    if (isSignedIn) {
+	    // if (isSignedIn) {
 		    if (selection[0]) {
 		    	document.getElementById("selection-wrapper").innerHTML = selection[0]
 		    	document.getElementById("selection-view").style.display = "block"
 		    } else {
 		    	$("#no-selection-view").css("display", "block")
 		    }
-	    }
+	    // }
 	});
-	chrome.storage.sync.get("rephrase", (result) => {
-		$("#rephrase-input").val(result.rephrase ? result.rephrase : "")
+	chrome.storage.sync.get(["rephrase", "lastSelection"], (result) => {
+		// if (result.lastSelection === document.getElementById("selection-wrapper").innerText) {
+			$("#rephrase-input").val(result.rephrase ? result.rephrase : "")
+		// }
 	});
 }
 
@@ -98,8 +114,20 @@ postFact = (tab) => {
 
 document.getElementById("rephrase-input").addEventListener("keyup", (e) => {
 	console.log("updating rephrase in storage")
-	chrome.storage.sync.set({"rephrase": e.target.value})
+	chrome.storage.sync.set({
+		"rephrase": e.target.value,
+		"lastSelection": document.getElementById("selection-wrapper").innerText
+	})
 })	
 // window.onblur = function(){
 // 	chrome.storage.sync.set({"rephrase": document.getElementById("rephrase-input").value})
 // }
+
+// document.getElementById("websocket-button").addEventListener("click", () => {
+// 	createChatRoomWebsocketConnection()
+// })
+
+document.getElementById("logout-button").addEventListener("click", () => {
+	chrome.storage.sync.set({"token": ""})
+	window.close()
+})
