@@ -9,8 +9,8 @@ chrome.storage.sync.get("token", (result) => {
 			Authorization: result.token
 		}
 	}
-	// debugger
-	fetch("https://crucible-api.herokuapp.com" + "/users/extension", configObj)
+
+	fetch(API_ROOT + "/users/extension", configObj)
 	.then(resp => resp.json())
 	.then(data => {
 		if (data.name) {

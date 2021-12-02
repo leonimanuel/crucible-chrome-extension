@@ -3,7 +3,6 @@ chrome.browserAction.setBadgeBackgroundColor({color: "#318fb5"})
 chrome.storage.onChanged.addListener(function(changes, storageName) {
 	console.log("Changes:", changes)
 	if (changes.token) {
-		// debugger
 		if (changes.token.newValue === "") {
 			console.log("closing socket")
 			socket.close();
@@ -27,7 +26,7 @@ chrome.storage.onChanged.addListener(function(changes, storageName) {
 chrome.runtime.onInstalled.addListener(() => {
   console.log('onStartup....');
 	chrome.storage.sync.get("token", (result) => {
-		let configObj = {
+    let configObj = {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -36,7 +35,7 @@ chrome.runtime.onInstalled.addListener(() => {
 			}
 		}
 		// debugger
-		fetch("https://crucible-api.herokuapp.com" + "/users/extension", configObj)
+		fetch("http://localhost:3000" + "/users/extension", configObj)
 		.then(resp => resp.json())
 		.then(user => {
 		  if (user.name) {

@@ -23,16 +23,17 @@ loginForm.addEventListener("submit", (e) => {
 		})
 	}
 
-	fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
+	// fetch("https://crucible-api.herokuapp.com" + "/authenticate", configObj)
+	fetch(API_ROOT + "/authenticate", configObj)
 		.then(resp => resp.json())
 		.then(data => {
 			if (data.auth_token) {
+				console.log(data.auth_token)
 				chrome.storage.sync.set({
 					"token": data.auth_token,
 					"name": data.user.name,
 					"unreads": data.user.unread_messages_count
-				}, () => {
-					// debugger
+				}, (result) => {					
 					chrome.browserAction.setBadgeText({"text": data.user.unread_messages_count.toString()});
 					if (data.user.unread_messages_count === 0) {
 						chrome.browserAction.setBadgeBackgroundColor({color: "#318fb5"})
@@ -89,7 +90,7 @@ getTab = (callback) => {
 }
 
 postFact = (tab) => {
-	let token = chrome.storage.local.get("token", (result) => {
+	let token = chrome.storage.sync.get("token", (result) => {
 		let configObj = {
 			method: "POST",
 			headers: {
@@ -103,7 +104,7 @@ postFact = (tab) => {
 					"selection_url": tab			
 			})
 		}
-		fetch("https://crucible-api.herokuapp.com/add-from-extension", configObj)
+		fetch(API_ROOT + "/add-from-extension", configObj)
 			.then(resp => resp.json())
 			.then(function(object) {
 				if (object.status === "success") {
