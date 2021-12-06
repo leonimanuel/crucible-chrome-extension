@@ -58,6 +58,8 @@ loginForm.addEventListener("submit", (e) => {
 showUser = (name) => {
 	$("#user-name").text(name);
 	$("#logout-button").css("display", "block");
+	
+	// Grab selection
 	chrome.tabs.executeScript({
 	    code: "window.getSelection().toString();"
 	}, function(selection) {
@@ -70,6 +72,7 @@ showUser = (name) => {
 		    }
 	    // }
 	});
+
 	chrome.storage.sync.get(["rephrase", "lastSelection"], (result) => {
 		// if (result.lastSelection === document.getElementById("selection-wrapper").innerText) {
 			$("#rephrase-input").val(result.rephrase ? result.rephrase : "")
@@ -91,31 +94,39 @@ getTab = (callback) => {
 
 postFact = (tab) => {
 	let token = chrome.storage.sync.get("token", (result) => {
-		let configObj = {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				Authorization: result.token
-			},
-			body: JSON.stringify({
-					"selected_text": document.getElementById("selection-wrapper").innerText,
-					"rephrase": document.getElementById("rephrase-input").value,
-					"selection_url": tab			
-			})
-		}
-		fetch(API_ROOT + "/add-from-extension", configObj)
-			.then(resp => resp.json())
-			.then(function(object) {
-				if (object.status === "success") {
-					$("#main").empty()
-					document.getElementById("successful-fact-submit-wrapper").style.display = "block"
-					chrome.storage.sync.set({"rephrase": ""})
-				}
-			})
-			.catch(function(error) {
-				alert(error.message);
-			})				
+		
+		// Grab selection paragraph (for context)
+		chrome.tabs.executeScript({
+		    code: "window.getSelection().anchorNode.parentNode.innerText"
+		}, function(selection) {
+			
+			// Configure POST request
+			let configObj = {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					Authorization: result.token
+				},
+				body: JSON.stringify({
+						"selected_text": document.getElementById("selection-wrapper").innerText,
+						"paragraph_text": selection[0],
+						"rephrase": document.getElementById("rephrase-input").value,
+						"selection_url": tab			
+				})
+			}
+			fetch(API_ROOT + "/add-from-extension", configObj)
+				.then(resp => resp.json())
+				.then(function(object) {
+					if (object.status === "success") {
+						$("#main").empty()
+						document.getElementById("successful-fact-submit-wrapper").style.display = "block"
+						chrome.storage.sync.set({"rephrase": ""})
+					}
+				})
+				.catch(function(error) {
+					alert(error.message);
+				})				});			
 	})
 }
 
