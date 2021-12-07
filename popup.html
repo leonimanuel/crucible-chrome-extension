@@ -17,10 +17,30 @@
 			<div ><b>Selection:</b></div>
 			<div id="selection-wrapper"></div>
 			<br>
-			<div><b>Rephrase:</b> (optional)</div>
+				<div id="selection-buttons-wrapper">
+					<button class="selection-button" id="collect-fact-option">collect fact</button>
+					<button class="selection-button" id="post-comment-option">post comment</button>
+				</div>		
+			<br>
+			<div id="form-header">Rephrase: (optional)</div>
 			<form id="submit-fact-form">
 				<textarea name="rephrase" id="rephrase-input" cols="30" rows="5"
-					placeholder="If your selection does not make sense as a fact as is, rephrase it here..."></textarea>
+					placeholder="If your selection does not make sense as a fact as is, rephrase it here...">
+				</textarea>
+
+				<form id="search-facts-form">
+					<div id="database-wrapper">
+						<div>
+							<b>Search Facts: </b>
+							<input id="fact-search-input" type="text" value=""/>
+							<input id="search-facts-button" type="submit" value="search">
+						</div>
+						<div id="database-facts-wrapper">
+							
+						</div>
+					</div>						
+				</form>	
+
 				<div id="fact-submit-wrapper">
 					<button id="logout-button">Log out</button>
 					<input id="submit-fact-button" type="submit" value="submit for review">

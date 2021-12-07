@@ -1,4 +1,5 @@
 let isSignedIn = false
+let actionType = "fact"
 
 chrome.storage.sync.get("name", (result) => {
 	if (result.name) {
@@ -130,6 +131,60 @@ postFact = (tab) => {
 	})
 }
 
+setPopupAction = (actionType) => {
+	actionType = actionType
+	switch (actionType) {
+		case "fact":
+			console.log("collecting fact")
+			$("#form-header").text("collect fact")
+			$("#submit-fact-button").val("submit for review")
+			return
+
+		case "comment":
+			console.log("posting comment")
+			$("#form-header").text("post comment")			
+			$("#submit-fact-button").val("post comment")
+			return
+
+		default: 
+			return
+	}
+}
+
+searchFacts = (searhPhrase, token) => {
+	$("#database-facts-wrapper").empty()
+
+  let searchVal = document.getElementById("fact-search-input").value
+
+  let configObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: token,
+    }, 
+    body: JSON.stringify({
+      searchVal: searchVal,
+    })
+  }
+  // debugger
+  fetch(API_ROOT + `/fact-search`, configObj)
+    .then(resp => resp.json())
+    .then((facts) => {
+			renderFacts(facts)
+   })
+   .catch(err => alert(err.message))	
+}
+
+renderFacts = (facts) => {
+	facts.map(fact => {
+		// const factContainer = document.createElement("div");
+		const factContainer = $("<div>", {"class": "fact-container"});
+		factContainer.text(fact.content)
+		$("#database-facts-wrapper").append(factContainer)		
+	})
+}
+
 document.getElementById("rephrase-input").addEventListener("keyup", (e) => {
 	console.log("updating rephrase in storage")
 	chrome.storage.sync.set({
@@ -141,4 +196,19 @@ document.getElementById("rephrase-input").addEventListener("keyup", (e) => {
 document.getElementById("logout-button").addEventListener("click", () => {
 	chrome.storage.sync.set({"token": ""})
 	window.close()
+})
+
+document.getElementById("collect-fact-option").addEventListener("click", () => {
+	setPopupAction("fact")
+})
+
+document.getElementById("post-comment-option").addEventListener("click", () => {
+	setPopupAction("comment")
+})
+
+document.getElementById("search-facts-button").addEventListener("click", (e) => {
+	e.preventDefault()
+	let token = chrome.storage.sync.get("token", (result) => {
+		searchFacts(e.target.value, result.token)
+	})
 })

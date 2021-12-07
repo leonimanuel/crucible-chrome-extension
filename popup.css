@@ -103,3 +103,32 @@ body {
 #logout-button {
 	display: none;
 }
+
+
+/*FACTS*/
+#database-facts-wrapper {
+	max-height: 300px;
+	overflow: scroll;
+}
+
+.fact-container {
+	text-align: left;
+	font-size: .8em;
+	border-radius: 10px;
+	/*padding: 5px;*/
+	margin-bottom: 5px;
+	overflow: hidden;
+	/*padding: 3px;*/
+	text-align: justify;
+	/*transition: .2s;	*/
+
+	cursor: grab;
+	background-color: snow;
+	color: black;
+	padding: 5px;	
+}
+
+
+
+
+
